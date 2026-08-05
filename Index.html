@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Digital</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="logo">
+                <span class="logo-text">LOJA</span>
+                <span class="logo-accent">DIGITAL</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="header-btn" onclick="toggleSearch()">
+                <i class="fas fa-search"></i>
+            </button>
+            <button class="header-btn cart-btn" onclick="toggleCart()">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+            <button class="header-btn" onclick="toggleAccount()">
+                <i class="fas fa-user"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Menu Mobile -->
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    <nav class="mobile-menu" id="mobileMenu">
+        <div class="menu-header">
+            <h2>Categorias</h2>
+            <button class="close-menu" onclick="toggleMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="menu-categories">
+            <a href="#" class="menu-item active" onclick="filterProducts('all')">Todos os Produtos</a>
+            <div id="menuCategories"></div>
+        </div>
+        <div class="menu-footer">
+            <a href="#" class="menu-item" onclick="toggleAccount()">
+                <i class="fas fa-user"></i> Minha Conta
+            </a>
+            <a href="#" class="menu-item" onclick="toggleCart()">
+                <i class="fas fa-shopping-cart"></i> Carrinho
+            </a>
+        </div>
+    </nav>
+
+    <!-- Barra de Pesquisa -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Buscar produtos..." oninput="searchProducts()">
+            <button class="close-search" onclick="toggleSearch()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Área de Categoria -->
+        <section class="category-section">
+            <div class="category-header">
+                <h2 class="category-title">CATEGORIA DE PRODUTOS</h2>
+                <a href="#" class="view-all">Ver todos <i class="fas fa-chevron-right"></i></a>
+            </div>
+            <div class="category-scroll" id="categoryScroll">
+                <button class="category-chip active" onclick="filterProducts('all')">Todos</button>
+            </div>
+        </section>
+
+        <!-- Grid de Produtos -->
+        <section class="products-section">
+            <div class="products-grid" id="productsGrid">
+                <!-- Skeleton Loading -->
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                    <div class="skeleton skeleton-button"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                    <div class="skeleton skeleton-button"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                    <div class="skeleton skeleton-button"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                    <div class="skeleton skeleton-button"></div>
+                </div>
+            </div>
+            <div class="no-products" id="noProducts" style="display: none;">
+                <i class="fas fa-box-open"></i>
+                <p>Nenhum produto encontrado</p>
+            </div>
+            <div class="error-message" id="errorMessage" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Erro ao carregar produtos. Tente novamente.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Carrinho Lateral -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Carrinho</h2>
+            <button class="close-cart" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="cart-empty">Seu carrinho está vazio</p>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">R$ 0,00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Finalizar Compra</button>
+        </div>
+    </div>
+
+    <!-- Modal de Checkout -->
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Finalizar Pedido</h2>
+                <button onclick="closeCheckout()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="checkout-items" id="checkoutItems"></div>
+            <div class="checkout-summary">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="checkoutSubtotal">R$ 0,00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="checkoutTotal">R$ 0,00</span>
+                </div>
+            </div>
+            <div class="payment-methods">
+                <h3>Método de Pagamento</h3>
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="pix" checked>
+                    <i class="fas fa-qrcode"></i>
+                    PIX
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="card">
+                    <i class="fas fa-credit-card"></i>
+                    Cartão de Crédito
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="boleto">
+                    <i class="fas fa-barcode"></i>
+                    Boleto
+                </label>
+            </div>
+            <button class="confirm-order-btn">Confirmar Pedido</button>
+        </div>
+    </div>
+
+    <!-- Modal de Conta -->
+    <div class="modal-overlay" id="accountModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Minha Conta</h2>
+                <button onclick="closeAccount()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="account-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('register')">Cadastro</button>
+            </div>
+            <div class="tab-content" id="loginTab">
+                <form onsubmit="login(event)">
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Senha" required>
+                    <button type="submit" class="submit-btn">Entrar</button>
+                </form>
+            </div>
+            <div class="tab-content" id="registerTab" style="display: none;">
+                <form onsubmit="register(event)">
+                    <input type="text" placeholder="Nome completo" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Senha" required>
+                    <input type="password" placeholder="Confirmar senha" required>
+                    <button type="submit" class="submit-btn">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="firebase.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
